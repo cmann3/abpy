@@ -29,7 +29,7 @@ class Asset:
 			self.destroy()
 		
 
-class Account:
+class Account(Asset):
 	def __init__(self, value = 0, owner = None, grow = 0, limit = 0, bank = None):
 		Asset.__init__(self, value = value, owner = owner, grow = grow, liquid = True)
 		self.limit = limit # withdraw limit for savings accounts
@@ -225,7 +225,7 @@ class Loan(Asset):
 
 		
 			
-class EcAgent:
+class EconAgent:
 	def __init__(self, cash = 0, assets = [], liabilities = []):
 		self.cash = cash
 		self.assets = assets
@@ -258,11 +258,12 @@ class EcAgent:
 			i.next()
 			
 		
-class Bank(EcAgent):
-	def __init__(self, cash = 0, reserves = 0, assets = [], liabilities = [], rrequire = 0.1):
+class Bank(EconAgent):
+	def __init__(self, cash = 0, reserves = 0, assets = [], liabilities = [], rrequire = 0.1, central_bank = None):
 		EcAgent.__init__(self, cash = cash, assets = assets, liabilities = liabilities)
 		self.reserves = reserves
 		self.rrequire = rrequire # reserve requirement
+		self.central_bank = central_bank # pointer to the central bank, which manages overnight loan market
 	
 	def total_deposits(self):
 	
@@ -271,6 +272,9 @@ class Bank(EcAgent):
 	def check_rratio(self):
 		
 	def change_reserves(self, x):
+		self.reserve += x
+		if self.check_rratio() is False:
+			# not meeting required reserve ratio. try to obtain more loans
 		
 	def lend(self, borrower, amount, interest, length):
 		
